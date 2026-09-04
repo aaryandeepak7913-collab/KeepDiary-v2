@@ -3,18 +3,9 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 
-/// Encrypted payload: everything needed to decrypt, safe to store or upload.
-///
-/// Field names and byte layout deliberately match the web app's Web Crypto
-/// output exactly — ct is ciphertext-with-tag-appended, in one base64 blob,
-/// under the key "ct", alongside "iv" — because Web Crypto's AES-GCM output
-/// bundles the auth tag onto the end of the ciphertext automatically, while
-/// Dart's `cryptography` package hands the tag back separately by default.
-/// Matching this means a vault file made by the web app (including anything
-/// pulled from Google Drive) can be decrypted here with zero conversion step.
 class EncryptedPayload {
   final String ivB64;
-  final String ctB64; // ciphertext + 16-byte GCM tag, concatenated, base64
+  final String ctB64;
   final int? updatedAt;
 
   EncryptedPayload({
@@ -38,12 +29,9 @@ class EncryptedPayload {
   }
 }
 
-/// Handles all encryption. Mirrors the web app's model exactly:
-/// PBKDF2 (250,000 rounds, SHA-256) -> AES-256-GCM key, derived fresh
-/// from the password every unlock. The key never touches disk.
 class CryptoService {
   static const _pbkdf2Iterations = 250000;
-  static const _macLengthBytes = 16; // standard AES-GCM tag length
+  static const _macLengthBytes = 16;
   static final _algorithm = AesGcm.with256bits();
   static final _random = Random.secure();
 
@@ -56,7 +44,6 @@ class CryptoService {
   static String bytesToB64(List<int> bytes) => base64Encode(bytes);
   static Uint8List b64ToBytes(String b64) => base64Decode(b64);
 
-  /// Derives a AES-256-GCM SecretKey from a password + salt.
   static Future<SecretKey> deriveKey(String password, Uint8List salt) async {
     final pbkdf2 = Pbkdf2(
       macAlgorithm: Hmac.sha256(),
@@ -73,8 +60,6 @@ class CryptoService {
       secretKey: key,
       nonce: nonce,
     );
-    // Web Crypto's AES-GCM output = ciphertext with the tag appended at the
-    // end. Reproduce that here so the two apps' encrypted bytes match exactly.
     final combined = Uint8List.fromList([...secretBox.cipherText, ...secretBox.mac.bytes]);
     return EncryptedPayload(
       ivB64: bytesToB64(secretBox.nonce),
