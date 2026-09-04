@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'crypto_service.dart';
 
-/// One diary entry, still encrypted, ready to store or sync.
 class EntryRecord {
-  final String date; // "YYYY-MM-DD"
+  final String date;
   final EncryptedPayload payload;
 
   EntryRecord({required this.date, required this.payload});
@@ -19,8 +18,6 @@ class EntryRecord {
   }
 }
 
-/// Everything about the vault except the entries themselves (kept in a
-/// separate box so we're not rewriting the whole vault on every keystroke).
 class VaultMeta {
   final String salt;
   final EncryptedPayload verifier;
@@ -43,8 +40,6 @@ class VaultMeta {
   }
 }
 
-/// Local storage for the vault. Everything here is ciphertext except dates —
-/// the same "server only ever sees encrypted bytes" model as the web version.
 class StorageService {
   static const _metaBoxName = 'vault_meta';
   static const _entriesBoxName = 'vault_entries';
@@ -90,8 +85,6 @@ class StorageService {
     return EntryRecord.fromMap(jsonDecode(raw as String) as Map);
   }
 
-  /// All entry dates currently stored — used to build the calendar dots
-  /// and compute streaks without decrypting anything.
   List<String> allEntryDates() {
     return _entriesBox.keys.cast<String>().toList()..sort();
   }
@@ -102,7 +95,6 @@ class StorageService {
     await _bioBox.clear();
   }
 
-  // Biometric-unlock wrapped key storage (device-only, never synced).
   Future<void> saveBiometricWrap(Map<String, dynamic> data) async {
     await _bioBox.put('bio', jsonEncode(data));
   }
