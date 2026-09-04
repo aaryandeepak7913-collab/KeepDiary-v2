@@ -31,9 +31,6 @@ class KeepApp extends StatelessWidget {
   }
 }
 
-/// Holds the vault's decryption key only in memory — never written to disk.
-/// Locking the app (or backgrounding it, eventually) just drops this and
-/// falls back to the lock screen, exactly like the web version.
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
   @override
