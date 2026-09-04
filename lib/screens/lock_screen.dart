@@ -107,6 +107,7 @@ class _LockScreenState extends State<LockScreen> {
                         obscureText: true,
                         style: const TextStyle(color: Colors.white),
                         decoration: _inputDecoration(_isSetup ? 'Choose a password' : 'Password'),
+                        onSubmitted: _isSetup ? null : (_) => _submit(),
                       ),
                       if (_isSetup) ...[
                         const SizedBox(height: 10),
@@ -117,12 +118,7 @@ class _LockScreenState extends State<LockScreen> {
                           decoration: _inputDecoration('Confirm password'),
                           onSubmitted: (_) => _submit(),
                         ),
-                      ] else
-                        TextField(
-                          controller: _passwordCtrl,
-                          obscureText: true,
-                          onSubmitted: (_) => _submit(),
-                        ),
+                      ],
                       if (_error != null) ...[
                         const SizedBox(height: 10),
                         Text(_error!, style: const TextStyle(color: Color(0xFFC1573C), fontSize: 13)),
