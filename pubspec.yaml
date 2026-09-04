@@ -1,0 +1,43 @@
+name: keep_diary
+description: A private, encrypted diary with biometric unlock and Google Drive sync.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Local, offline-first storage
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.2
+
+  # Encryption
+  cryptography: ^2.7.0
+
+  # Biometric unlock
+  local_auth: ^2.2.0
+
+  # Google Drive sync
+  google_sign_in: ^6.2.1
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
+  http: ^1.2.1
+
+  # Calendar UI
+  table_calendar: ^3.1.2
+
+  intl: ^0.19.0
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
