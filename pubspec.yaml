@@ -19,8 +19,10 @@ dependencies:
   # Encryption
   cryptography: ^2.7.0
 
-  # Biometric unlock
-  local_auth: ^2.2.0
+  # Biometric unlock — added back once the local_auth Windows plugin's
+  # build issue with newer MSVC toolchains is resolved (currently fails
+  # to compile on GitHub's windows-latest runner; unrelated to our code).
+  # local_auth: ^2.2.0
 
   # Google Drive sync
   google_sign_in: ^6.2.1
